@@ -1,30 +1,23 @@
 const mongoose = require('mongoose')
 
 const TaskSchema = new mongoose.Schema({
-    id_tx : {
-        type : String,
-        required : true,
-        unique : true
+    args : {
+        transactionId : String,
+        customerId : String,
+        productId : String,
+        options : [],
     },
-    taskDesc : {
-        type : String,
-        required : true
-    },
-    state : {
-        type : String,
-        required : true
-    },
-    date : {
-        type : Date
-    }
-});
+    priority : Number,
+    queue : String,
+    operation : String,
+    status : String,
+    creationDate : Date,
+    finishedDate : Date
+} , {collection : "pendingTask", versionKey : false});
 
 TaskSchema.statics.addTask = async function addTask(taskReceived){
     
     try {
-        taskReceived.state = 'pendiente';
-        taskReceived.date = new Date();
-
         var task = new TaskModel(taskReceived)
         
         await TaskModel.create(task)
@@ -37,11 +30,14 @@ TaskSchema.statics.addTask = async function addTask(taskReceived){
     }
 }
 
-TaskSchema.statics.getById = async function getById(data){
-    
+TaskSchema.statics.getById = async function getById(transactionId){
     try {
-        const task = await TaskModel.findOne(data, {_id : 0, __v : 0});
+        var filter = {
+            "args.transactionId" : transactionId
+        }
 
+        const task = await TaskModel.findOne(filter, {_id : 0, __v: 0});
+        
         return task;
     } catch (error) {
         throw error

@@ -1,0 +1,21 @@
+[
+    {
+        "ENTORNO" : "produccion",
+        "USER_DB" : "ossTest",
+        "PASS_DB" : "ossTest",
+        "HOST" : {
+            "RS_NAME" : "rs30",
+            "M1" : "OSSMDBPRBE030.telecentro.net.ar:27017",
+            "M2" : "OSSMDBPRBE031.telecentro.net.ar:27017",
+            "M3" : "OSSMDBPRBE032.telecentro.net.ar:27017"
+        },
+        "DB_NAME" : "ossVideoTest"
+    },
+    {
+        "ENTORNO" : "local",
+        "USER_DB" : "",
+        "PASS_DB" : "",
+        "HOST" : "localhost:5000",
+        "DB_NAME" : "testVideo"
+    }
+]

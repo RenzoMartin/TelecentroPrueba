@@ -1,0 +1,8 @@
+Agregar tarea:
+	https://host:port/tasks/customId/newProductId/newOptionsId
+
+obtener tarea por transaction ID
+	https://host:port/tasks/get        -----> header param = tx_id
+
+obtener todas las tareas pendientes 
+	https://host:port/tasks/get        -----> header param = empty

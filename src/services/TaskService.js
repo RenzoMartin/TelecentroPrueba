@@ -1,16 +1,28 @@
 const taskRepository = require('../models/taskRepository');
-
+const externalWs = require('../services/ExternalWs')
+const taskCreator = require('../services/TaskCreator');
 const Task = require('../models/taskRepository');
 
 
 class TaskService{
 
-    async addPendingTask(task){
-
+    async addPendingTask(args){
         try{
-            
-            const taskSaved = await Task.addTask(task);
 
+            const filter = {
+                tipo : args.tipo
+            }
+            
+            const task = await taskCreator.getTaskTemplate(filter, args);
+
+            const taskSaved = await Task.addTask(task);
+                
+            //aviso al scheduler que se añadio la tarea
+            /*
+            externalWs.addedTask(taskSaved.id_tx, (response)=>{
+                console.log('scheduler avisado');
+            });
+            */
             return taskSaved;
 
         }catch(e){
@@ -29,25 +41,14 @@ class TaskService{
      *              Si el parametro es null, se devuelven todas las tareas pendientes.
      *  
      */
-    async getPendingTasks(data){
+    async getPendingTasks(transactionId){
 
-        if(data.id_tx == 'none'){
+        if(transactionId){ 
             try {
-                const tasks = await Task.getPendingTasks();
-
-                return tasks;
-
-            } catch (error) {
+                const task = await Task.getById(transactionId);
                 
-            } 
-        
-        }else{
-            try {
-                const task = await Task.getById(data);
-
                 if(task === null){
-                    return {error : 'task not found'}
-                                    
+                    return {error : 'transactionID not found'}      
                 }else{
                     return task;
                 }
@@ -55,9 +56,17 @@ class TaskService{
             } catch (error) {
                 throw error
             }
+        }else{
+            try {
+                const tasks = await Task.getPendingTasks();
+
+                return tasks;
+
+            } catch (error) {
+                throw error;
+            }
         }
     }
-
 }
 
 module.exports = new TaskService()
